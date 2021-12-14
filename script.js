@@ -39,16 +39,51 @@ function lineline(x1,y1,x2,y2,x3,y3,x4,y4){
 
 class voxel{
   constructor(x,y,z){
-    this.x=x;
-    this.y=y;
-    this.z=z;
     this.size=50;
+    this.x=x*this.size;
+    this.y=y*this.size;
+    this.z=z*this.size;
+  }
+  action(){
+
+  }
+
+  trigger(player){
+    //collision & response
+    if(player.x > this.x && player.x < this.x + this.size && player.y > this.y && player.y < this.y + this.size && player.z > this.z && player.z < this.z + this.size &&){
+      let pos = raycast(player, player.previos);
+    }
+  }
+
+  draw(){
+    push();
+    translate(this.x,this.y,this.z);
+    box();
+    pop();
   }
 
   raycast(p1,p2){
     let l1=lineline(p1.x, p1.y, p2.x, p2.y, this.x-(this.size/2),this.y+(this.size/2),this.x-(this.size/2),this.y-(this.size/2));
-    let l2=lineline(p1.z, p1.y, p2.z, p2.y, this.z+(this.size/2),this.y+(this.size/2),this.z+(this.size/2),this.y-(this.size/2));
-    return {x:l1[0],y:l2[1],z:l2[0]]};
+    let l2=lineline(p1.y, p1.z, p2.y, p2.z, this.y+(this.size/2),this.z+(this.size/2),this.y+(this.size/2),this.z-(this.size/2));
+    let l3=lineline(p1.x, p1.z, p2.x, p2.z, this.x-(this.size/2),this.z+(this.size/2),this.x-(this.size/2),this.z-(this.size/2));
+    let res={x:undefined,y:undefined,z:undefined};
+    if(l1[0]===undefined){
+      res.x=l3[0];
+    }else{
+      res.x=l1[0];
+    }
+    if(l1[1]===undefined){
+      res.y=l2[1];
+    }else{
+      res.y=l1[1];
+    }
+    if(l2[0]===undefined){
+      res.z=l3[1];
+    }else{
+      res.z=l2[0];
+    }
+    if(res=undefined){return false;}
+    return res;
   }
 
 }
@@ -80,6 +115,9 @@ function draw() {
   translate(0,-50,0);
   box(10);
   pop();
+
+  b=new voxel(1,1,1);
+  b.draw();
   
   player.velocity.x+=player.acceleration.x;
   player.velocity.y+=player.acceleration.y;
